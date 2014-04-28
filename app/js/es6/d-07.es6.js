@@ -21,43 +21,35 @@
 
     var movieCount = $('#movieCount').val() * 1;
 
-    var url = 'http://api.rottentomatoes.com/api/public/v1.0/lists/movies/box_office.json?limit=16&country=us&apikey=tntv5r3367ajeyw9w9wd862g&callback=?';
+    var url = `http://api.rottentomatoes.com/api/public/v1.0/lists/movies/box_office.json?limit=${movieCount}&country=us&apikey=tntv5r3367ajeyw9w9wd862g&callback=?`;
     $.getJSON(url, addBoxOffice);
 
     function addBoxOffice(data)
     {
-      chartData = [];
+      chart.dataProvider = [];
 
       var movies = data.movies;
-      movies.forEach(function(movie,i)
+      movies.forEach(function(movie)
       {
-        if(movieCount)
-        {
-          --movieCount;
+        chart.dataProvider.push({
+            title: movie.title,
+            critics_score: movie.ratings.critics_score,
+            audience_score: movie.ratings.audience_score
+        });
 
-          chartData.push({
-              title: movie.title,
-              critics_score: movie.ratings.critics_score,
-              audience_score: movie.ratings.audience_score,
-              index: i
-          });
-
-          // var $div = $('<div>');
-          // var $img=$('<img>').attr('src', movie.posters.thumbnail);
-          // $div.append($img);
-          // $div.append(`<br> ${movie.title}`);
-          // $('#output').append($div);
-        }
+        // var $div = $('<div>');
+        // var $img=$('<img>').attr('src', movie.posters.thumbnail);
+        // $div.append($img);
+        // $div.append(`<br> ${movie.title}`);
+        // $('#output').append($div);
       });
       debugger;
-      chart.dataProvider = chartData;
       chart.validateData();
       //makeScoreChart();
     }
   }
 
   var chart;
-  var chartData = [];
 
   function makeScoreChart()
   {
@@ -69,7 +61,7 @@
     'legend': {
         'useGraphSettings': true
     },
-    'dataProvider': chartData,
+    'dataProvider': [],
     'valueAxes': [{
         'id': 'v1',
         'minimum': 0,
@@ -131,7 +123,7 @@ zoomChart();
 // this method is called when chart is first inited as we listen for 'dataUpdated' event
 function zoomChart() {
     // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
-    chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
+    chart.zoomToIndexes(chart.dataProvider.length - 40, chart.dataProvider.length - 1);
 }
   }
 
