@@ -50,8 +50,9 @@
         }
       });
       debugger;
+      chart.dataProvider = chartData;
       chart.validateData();
-      makeScoreChart();
+      //makeScoreChart();
     }
   }
 
